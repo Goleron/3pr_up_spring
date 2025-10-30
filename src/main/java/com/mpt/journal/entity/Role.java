@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "roles")
 @Data
@@ -21,11 +18,10 @@ public class Role {
     private Long id;
 
     @NotBlank(message = "Название роли обязательно")
-    @Size(min = 3, max = 50, message = "Название роли: от 3 до 50 символов")
+    @Size(max = 50, message = "Название роли: до 50 символов")
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    @ToString.Exclude
-    private Set<User> users = new HashSet<>();
+    // УДАЛИЛИ @ManyToMany связь с User - она нам не нужна
+    // Связь управляется только со стороны User
 }

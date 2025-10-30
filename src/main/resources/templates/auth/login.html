@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход - SportShop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header h2 {
+            color: #667eea;
+            font-weight: 700;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="login-header">
+        <h2>🏋️ SportShop</h2>
+        <p class="text-muted">Вход в систему</p>
+    </div>
+
+    <!-- Сообщения об ошибках -->
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Сообщения об успехе -->
+    <div th:if="${message}" class="alert alert-success" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" role="alert">
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- Сообщения о завершении сессии -->
+    <div th:if="${param.expired}" class="alert alert-warning" role="alert">
+        <strong>⚠️ Сессия истекла!</strong><br>
+        <span th:if="${param.reason != null and param.reason[0] == 'lifetime'}">
+            Прошло более 15 минут с момента входа в систему.
+        </span>
+        <span th:if="${param.reason != null and param.reason[0] == 'inactive'}">
+            Вы бездействовали более 3 минут.
+        </span>
+        <span th:if="${param.reason == null}">
+            Пожалуйста, войдите снова.
+        </span>
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label">Имя пользователя</label>
+            <input type="text" class="form-control" id="username" name="username"
+                   placeholder="Введите имя пользователя" required autofocus>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="password" name="password"
+                   placeholder="Введите пароль" required>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+            <label class="form-check-label" for="remember-me">
+                Запомнить меня
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-login">Войти</button>
+    </form>
+
+    <hr class="my-4">
+
+    <div class="text-center">
+        <p class="text-muted">Нет аккаунта?</p>
+        <a th:href="@{/register}" class="btn btn-outline-primary w-100">Зарегистрироваться</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- Таймер сессии (фрагмент) -->
+<div th:fragment="session-timer">
+    <div id="session-timer" class="alert alert-info position-fixed bottom-0 end-0 m-3"
+         style="display: none; z-index: 9999; min-width: 250px;">
+        <strong>⏱️ Сессия:</strong>
+        <div id="timer-text">Осталось: <span id="timer-value">3:00</span></div>
+        <small class="text-muted">При бездействии сессия закроется автоматически</small>
+    </div>
+
+    <script>
+        // Время бездействия: 3 минуты = 180 секунд
+        const MAX_INACTIVE_TIME = 180;
+        let remainingTime = MAX_INACTIVE_TIME;
+        let timerInterval;
+        let lastActivityTime = Date.now();
+
+        // Показываем таймер только когда осталось меньше 60 секунд
+        function updateTimer() {
+            const now = Date.now();
+            const inactiveSeconds = Math.floor((now - lastActivityTime) / 1000);
+            remainingTime = MAX_INACTIVE_TIME - inactiveSeconds;
+
+            if (remainingTime <= 0) {
+                // Перенаправляем на логин
+                window.location.href = '/login?expired=true&reason=inactive';
+                return;
+            }
+
+            // Показываем таймер, если осталось меньше 60 секунд
+            const timerDiv = document.getElementById('session-timer');
+            if (remainingTime <= 60) {
+                timerDiv.style.display = 'block';
+
+                // Красный цвет, если меньше 30 секунд
+                if (remainingTime <= 30) {
+                    timerDiv.classList.remove('alert-info', 'alert-warning');
+                    timerDiv.classList.add('alert-danger');
+                } else {
+                    timerDiv.classList.remove('alert-info', 'alert-danger');
+                    timerDiv.classList.add('alert-warning');
+                }
+            } else {
+                timerDiv.style.display = 'none';
+            }
+
+            // Форматируем время
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            document.getElementById('timer-value').textContent =
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Сбрасываем таймер при любой активности
+        function resetTimer() {
+            lastActivityTime = Date.now();
+            remainingTime = MAX_INACTIVE_TIME;
+        }
+
+        // Отслеживаем активность пользователя
+        ['mousedown', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetTimer);
+        });
+
+        // Запускаем таймер
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</div>
+
+</body>
+</html>
