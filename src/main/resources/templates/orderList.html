@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы — SportShop</title>
+    <style>
+        body { font-family: "Segoe UI"; background: #f9fafc; margin: 0; padding: 20px; }
+        h1 { color: #1976d2; }
+        table { border-collapse: collapse; width: 100%; background: white; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #1976d2; color: white; }
+        input, select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-right: 5px; }
+        form { margin-top: 20px; }
+        a.button, button {
+            background: #1976d2; color: white; border: none; padding: 10px 15px;
+            border-radius: 6px; cursor: pointer; text-decoration: none;
+        }
+        a.button:hover, button:hover { background: #125ea8; }
+        form.filter-form { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<a class="button" th:href="@{/}">← На главную</a>
+<h1>Заказы</h1>
+
+<!-- Форма добавления -->
+<form th:action="@{/orders/add}" method="post">
+    <input type="text" name="customerName" placeholder="Имя покупателя" required>
+    <label>Товары:</label>
+    <select name="productIds" multiple required>
+        <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name}"></option>
+    </select>
+    <button type="submit">Создать заказ</button>
+</form>
+
+<!-- Поиск и фильтры -->
+<h3>Поиск и фильтрация</h3>
+<form class="filter-form" th:action="@{/orders}" method="get">
+    <input type="text" name="search" th:value="${search}" placeholder="Поиск по имени покупателя">
+    <input type="text" name="customerName" th:value="${customerName}" placeholder="Фильтр по имени">
+    <input type="number" step="0.01" name="minTotal" th:value="${minTotal}" placeholder="Мин. сумма">
+    <input type="number" step="0.01" name="maxTotal" th:value="${maxTotal}" placeholder="Макс. сумма">
+    <input type="number" name="minProducts" th:value="${minProducts}" placeholder="Мин. товаров">
+    <label><input type="checkbox" name="showDeleted" th:checked="${showDeleted}"> Показать удалённые</label>
+    <label>Размер страницы <input type="number" name="size" th:value="${pageSize}" min="10"></label>
+    <button type="submit">Применить</button>
+</form>
+
+<!-- Список заказов -->
+<h2>Все заказы (всего: <span th:text="${totalItems}">0</span>)</h2>
+<form th:action="@{/orders/deleteMany}" method="post" id="bulkForm">
+    <table>
+        <thead>
+        <tr>
+            <th><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
+            <th>ID</th>
+            <th>Покупатель</th>
+            <th>Товары (ID)</th>
+            <th>Сумма</th>
+            <th>Удалён</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td><input type="checkbox" name="idList" th:value="${o.id}"></td>
+            <td th:text="${o.id}"></td>
+            <td th:text="${o.customerName}"></td>
+            <td th:text="${o.productIds}"></td>
+            <td th:text="${o.totalPrice} + ' ₽'"></td>
+            <td th:text="${o.deleted}"></td>
+            <td>
+                <form th:action="@{/orders/delete}" method="post">
+                    <input type="hidden" name="id" th:value="${o.id}">
+                    <label><input type="checkbox" name="hard" value="true"> Физическое</label>
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <label>Физическое удаление выбранных: <input type="checkbox" name="hard" value="true"></label>
+    <button type="submit">Удалить выбранные</button>
+</form>
+
+<!-- Пагинация -->
+<div style="margin-top: 20px;">
+    <p>Страница <span th:text="${currentPage}">1</span> (всего: <span th:text="${totalItems}">0</span>)</p>
+    <div>
+        <a class="button"
+           th:if="${currentPage > 1}"
+           th:href="@{/orders(page=${currentPage - 1}, size=${pageSize}, search=${search}, customerName=${customerName}, minTotal=${minTotal}, maxTotal=${maxTotal}, minProducts=${minProducts}, showDeleted=${showDeleted})}">
+            ← Предыдущая
+        </a>
+        <a class="button"
+           th:if="${(currentPage * pageSize) < totalItems}"
+           th:href="@{/orders(page=${currentPage + 1}, size=${pageSize}, search=${search}, customerName=${customerName}, minTotal=${minTotal}, maxTotal=${maxTotal}, minProducts=${minProducts}, showDeleted=${showDeleted})}">
+            Следующая →
+        </a>
+    </div>
+</div>
+
+<script>
+    function toggleAll(cb) {
+        document.querySelectorAll('input[name="idList"]').forEach(ch => ch.checked = cb.checked);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SportShop — Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            text-align: center;
+            padding: 30px 0;
+            font-size: 32px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 50px;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .nav-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #333;
+            border: 2px solid transparent;
+        }
+        .nav-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+        .nav-card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .nav-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        .nav-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        .welcome-text {
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    🏋️‍♂️ SportShop — Интернет-магазин спортивных товаров
+</div>
+
+<div class="container">
+    <div class="welcome-text">
+        <h2>Добро пожаловать в систему управления!</h2>
+        <p>Выберите раздел для работы:</p>
+    </div>
+
+    <div class="card-grid">
+        <a href="/products" class="nav-card">
+            <div class="icon">📦</div>
+            <h3>Товары</h3>
+            <p>Управление каталогом товаров</p>
+        </a>
+
+        <a href="/categories" class="nav-card">
+            <div class="icon">🏷️</div>
+            <h3>Категории</h3>
+            <p>Категории товаров</p>
+        </a>
+
+        <a href="/orders" class="nav-card">
+            <div class="icon">🛒</div>
+            <h3>Заказы</h3>
+            <p>Управление заказами</p>
+        </a>
+
+        <a href="/users" class="nav-card">
+            <div class="icon">👥</div>
+            <h3>Пользователи</h3>
+            <p>Управление пользователями</p>
+        </a>
+
+        <a href="/profiles" class="nav-card">
+            <div class="icon">👤</div>
+            <h3>Профили</h3>
+            <p>Профили пользователей</p>
+        </a>
+    </div>
+</div>
+</body>
+</html>

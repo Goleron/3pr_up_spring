@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Профили</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2>👤 Профили пользователей</h2>
+
+    <div class="mb-3">
+        <a th:href="@{/profiles/new}" class="btn btn-success">➕ Создать профиль</a>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Пользователь</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+            <th>Адрес</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${profiles}">
+            <td th:text="${p.id}"></td>
+            <td>
+                <strong th:text="${p.user.username}"></strong><br>
+                <small class="text-muted" th:text="${p.user.email}"></small>
+            </td>
+            <td th:text="${p.firstName} ?: '—'"></td>
+            <td th:text="${p.lastName} ?: '—'"></td>
+            <td th:text="${p.phone} ?: '—'"></td>
+            <td th:text="${#strings.abbreviate(p.address, 30)} ?: '—'"></td>
+            <td>
+                <a th:href="@{/profiles/{id}/edit(id=${p.id})}" class="btn btn-sm btn-warning">✏️ Изменить</a>
+                <form th:action="@{/profiles/{id}/delete(id=${p.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Удалить профиль?')">🗑️ Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Пагинация -->
+    <nav th:if="${totalPages > 1}" class="mt-4">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/profiles(page=${currentPage - 1}, size=10)}">«</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/profiles(page=${i}, size=10)}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/profiles(page=${currentPage + 1}, size=10)}">»</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

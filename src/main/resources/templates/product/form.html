@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Товар</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2 th:text="${product.id != null} ? '✏️ Редактировать товар' : '➕ Новый товар'"></h2>
+
+    <form th:action="@{${product.id != null} ? '/products/' + ${product.id} : '/products'}"
+          th:object="${product}" method="post" class="needs-validation" novalidate>
+
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="mb-3">
+            <label class="form-label">Название *</label>
+            <input type="text" th:field="*{name}" class="form-control" required
+                   minlength="2" maxlength="100"/>
+            <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Описание</label>
+            <textarea th:field="*{description}" class="form-control" rows="4" maxlength="1000"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" class="text-danger" th:errors="*{description}"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Цена (₽) *</label>
+                <input type="number" step="0.01" min="0.01" th:field="*{price}" class="form-control" required />
+                <div th:if="${#fields.hasErrors('price')}" class="text-danger" th:errors="*{price}"></div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Остаток на складе *</label>
+                <input type="number" min="0" th:field="*{stock}" class="form-control" required />
+                <div th:if="${#fields.hasErrors('stock')}" class="text-danger" th:errors="*{stock}"></div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Категория *</label>
+            <select th:field="*{category.id}" class="form-select" required>
+                <option value="">— Выберите категорию —</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+        </div>
+
+        <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+            <a th:href="@{/products}" class="btn btn-secondary">↩️ Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

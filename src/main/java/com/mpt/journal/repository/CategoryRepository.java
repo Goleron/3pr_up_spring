@@ -1,0 +1,18 @@
+package com.mpt.journal.repository;
+
+import com.mpt.journal.entity.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+    Page<Category> findByIsDeletedFalse(Pageable pageable);
+
+    @Query("SELECT c FROM Category c WHERE c.isDeleted = false AND LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    Page<Category> findByNameContainingIgnoreCaseAndIsDeletedFalse(@Param("name") String name, Pageable pageable);
+}
